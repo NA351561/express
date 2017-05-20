@@ -17,7 +17,7 @@ flower.save(function(err,data){
 });
 router.get('/display',function(req,res){
 // var flower=new Flower(req.params.Name);
-Flower.find({Price:{$gt:10}},function(err,data){
+Flower.find({},function(err,data){
 if(err)
   res.send(err);
 else {

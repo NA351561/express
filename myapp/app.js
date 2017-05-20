@@ -1,64 +1,71 @@
 var express = require('express');
 var app = express();
+
 var bodyParser=require('body-parser');
-var config=require('../config/config');
+var config = require('../config/config');
+
+// var myDefaultFun = function(req,res,next){
+
+//     console.log("Default fn is called");
+
+//     next();
+
+// }
+
+var User=require('../router/user');
+//var Admin=require('./router/')
+
+var mongoose=require('mongoose');
+
+var db = 'mongodb://localhost/centralcity';
+
+mongoose.connect(db);
+
+var db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'connection error:'));
+
+db.once('open', function() {
+
+    console.log("connnected with mongo");
+
+});
 
 app.use(bodyParser.urlencoded({extended:true}));
 
-// app.get('/user/:id', function (req, res, next) {
-//   // if the user ID is 0, skip to the next route
-//   if (req.params.id === '0') next('route')
-//   // otherwise pass the control to the next middleware function in this stack
-//   else next()
-// }, function (req, res, next) {
-//   // render a regular page
-//   res.render('regular')
+
+
+app.use('/user',User);
+var Flower=require('../router/flower');
+app.use('/adding',Flower);
+
+
+
+//app.use(express.static('./'))
+
+
+
+// app.get('/use',function(req,res){
+//
+//     res.send({"response":"Get is called"});
+//
 // })
 //
-// // handler for the /user/:id path, which renders a special page
-// app.get('/user/:id', function (req, res, next) {
-//   res.render('special')
+// app.post('/post',function(req,res){
+//
+//     res.send({"response":"post is called"+req.body.value});
+//
+// })
+
+// app.get('/userdata/:name/:val',function(req,res){
+
+//   res.send({"response":"Get username is called"+req.params.name});
+
 // })
 
 
-// app.get('/',function (req,res) {
-//   console.log("app get is called");
-//   res.send({"response":"Get is called"});
-// });
- // app.put('/user/:name/:value',function (req,res) {
- //   res.send('hello World!!!'+req.params.name+req.params.value);
- // });
+app.listen(config.port,function(){
 
-//  var user=require('../router/user.js');
-//  app.use('/nandini',user);
+    console.log("server started at 8080");
 
-
-// var r1 = express.Router();
-// r1.get('/', function (req, res,next) {
-//   console.log('hai r1');
-//   next();
-// });
-//
-// var r2 = express.Router();
-// r2.get('/', function (req, res,next) {
-//   console.log('hai r2');
-//   next();
-// });
-//
-// app.use(r1, r2);
-
-var mongoose=require('mongoose');
-mongoose.connect(config.URL);
-var db=mongoose.connection;
-db.on('error',console.error.bind(console,'connection error:'));
-db.once('open',function callback(){
-  console.log('data base connected');
-});
-
-var flower=require('../router/flower.js');
-app.use('/adding',flower);
-
-app.use(express.static('./'));
-app.listen(config.port,function () {
-  console.log("server 8080");
-});
+})
